@@ -8,7 +8,7 @@ public class Friendship {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "friendship_id")
-    private int friendshipId;
+    private Integer friendshipId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId1")

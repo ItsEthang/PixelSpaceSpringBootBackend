@@ -8,7 +8,7 @@ public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "like_id")
-    private int likeId;
+    private Integer likeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
