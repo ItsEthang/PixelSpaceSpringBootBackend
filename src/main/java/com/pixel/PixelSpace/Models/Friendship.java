@@ -1,8 +1,19 @@
 package com.pixel.PixelSpace.Models;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "FRIENDSHIP")
 public class Friendship {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "friendship_id")
     private int friendshipId;
+
+    @Column(name = "user_id_1")
     private int userId1;
+
+    @Column(name = "user_id_2")
     private int userId2;
 
     public Friendship() {

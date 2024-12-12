@@ -1,9 +1,22 @@
 package com.pixel.PixelSpace.Models;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "LIKE")
 public class Like {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "like_id")
     private int likeId;
+
+    @Column(name = "post_id")
     private int postId;
+
+    @Column(name = "comment_id")
     private int commentId;
+
+    @Column(name = "user_id")
     private int userId;
 
     public Like() {

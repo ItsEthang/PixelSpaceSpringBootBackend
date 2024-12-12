@@ -3,10 +3,20 @@ package com.pixel.PixelSpace.Models;
 import java.time.LocalDate;
 import jakarta.persistence.*;
 
+@Entity
+@Table(name = "POST")
 public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "post_id")
     private int postId;
+
+    @Column(name = "user_id")
     private int userId;
+
     private String content;
+
+    @Column(name = "date_created")
     private LocalDate dateCreated;
 
     public Post() {

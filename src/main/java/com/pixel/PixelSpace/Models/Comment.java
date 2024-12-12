@@ -1,12 +1,25 @@
 package com.pixel.PixelSpace.Models;
 
 import java.time.LocalDate;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "COMMENT")
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "comment_id")
     private int commentId;
+
+    @Column(name = "post_id")
     private int postId;
+
+    @Column(name = "user_id")
     private int userId;
+
     private String content;
+
+    @Column(name = "date_created")
     private LocalDate dateCreated;
 
     public Comment() {

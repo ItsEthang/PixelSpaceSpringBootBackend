@@ -8,6 +8,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     private int userId;
 
     @Column(name = "username", length = 50, nullable = false, unique = true)
@@ -22,6 +23,7 @@ public class User {
 
     private String bio;
 
+    @Column(name = "profile_img")
     private String profileImg;
 
     public User() {
