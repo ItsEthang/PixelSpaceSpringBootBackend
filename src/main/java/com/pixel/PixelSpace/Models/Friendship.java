@@ -3,7 +3,7 @@ package com.pixel.PixelSpace.Models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "FRIENDSHIP")
+@Table(name = "Friendship")
 public class Friendship {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
