@@ -1,6 +1,8 @@
 package com.pixel.PixelSpace.Models;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -11,16 +13,22 @@ public class Comment {
     @Column(name = "comment_id")
     private int commentId;
 
-    @Column(name = "post_id")
-    private int postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
 
-    @Column(name = "user_id")
-    private int userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
+    @Column(length = 800)
     private String content;
 
     @Column(name = "date_created")
     private LocalDate dateCreated;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
+    private List<Like> likes;
 
     public Comment() {
 
@@ -32,22 +40,6 @@ public class Comment {
 
     public void setCommentId(int commentId) {
         this.commentId = commentId;
-    }
-
-    public int getPostId() {
-        return postId;
-    }
-
-    public void setPostId(int postId) {
-        this.postId = postId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public String getContent() {
@@ -71,10 +63,7 @@ public class Comment {
         final int prime = 31;
         int result = 1;
         result = prime * result + commentId;
-        result = prime * result + postId;
-        result = prime * result + userId;
         result = prime * result + ((content == null) ? 0 : content.hashCode());
-        result = prime * result + ((dateCreated == null) ? 0 : dateCreated.hashCode());
         return result;
     }
 
@@ -89,19 +78,10 @@ public class Comment {
         Comment other = (Comment) obj;
         if (commentId != other.commentId)
             return false;
-        if (postId != other.postId)
-            return false;
-        if (userId != other.userId)
-            return false;
         if (content == null) {
             if (other.content != null)
                 return false;
         } else if (!content.equals(other.content))
-            return false;
-        if (dateCreated == null) {
-            if (other.dateCreated != null)
-                return false;
-        } else if (!dateCreated.equals(other.dateCreated))
             return false;
         return true;
     }

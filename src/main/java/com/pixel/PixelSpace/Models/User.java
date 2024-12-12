@@ -1,5 +1,7 @@
 package com.pixel.PixelSpace.Models;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -25,6 +27,15 @@ public class User {
 
     @Column(name = "profile_img")
     private String profileImg;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Post> posts;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Comment> comments;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Like> likes;
 
     public User() {
 

@@ -10,14 +10,17 @@ public class Like {
     @Column(name = "like_id")
     private int likeId;
 
-    @Column(name = "post_id")
-    private int postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
 
-    @Column(name = "comment_id")
-    private int commentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
-    @Column(name = "user_id")
-    private int userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Like() {
 
@@ -31,38 +34,12 @@ public class Like {
         this.likeId = likeId;
     }
 
-    public int getPostId() {
-        return postId;
-    }
-
-    public void setPostId(int postId) {
-        this.postId = postId;
-    }
-
-    public int getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + likeId;
-        result = prime * result + postId;
-        result = prime * result + commentId;
-        result = prime * result + userId;
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
         return result;
     }
 
@@ -77,11 +54,10 @@ public class Like {
         Like other = (Like) obj;
         if (likeId != other.likeId)
             return false;
-        if (postId != other.postId)
-            return false;
-        if (commentId != other.commentId)
-            return false;
-        if (userId != other.userId)
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
             return false;
         return true;
     }
