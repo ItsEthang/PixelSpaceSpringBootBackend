@@ -1,6 +1,5 @@
 package com.pixel.PixelSpace.Models;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -17,16 +16,26 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     @Column(length = 6000)
     private String content;
 
-    @Column(name = "date_created")
-    private LocalDate dateCreated;
+    @Column(name = "timeCreatedEpoch")
+    private Long timeCreated;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<Like> likes;
 
     public Post() {
@@ -49,12 +58,36 @@ public class Post {
         this.content = content;
     }
 
-    public LocalDate getDateCreated() {
-        return dateCreated;
+    public Long getTimeCreated() {
+        return timeCreated;
     }
 
-    public void setDateCreated(LocalDate dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setTimeCreated(Long timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<Like> likes) {
+        this.likes = likes;
     }
 
     @Override

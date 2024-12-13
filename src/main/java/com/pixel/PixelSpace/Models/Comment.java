@@ -1,6 +1,5 @@
 package com.pixel.PixelSpace.Models;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -24,10 +23,10 @@ public class Comment {
     @Column(length = 800)
     private String content;
 
-    @Column(name = "date_created")
-    private LocalDate dateCreated;
+    @Column(name = "timeCreatedEpoch")
+    private Long timeCreated;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.ALL)
     private List<Like> likes;
 
     public Comment() {
@@ -50,12 +49,36 @@ public class Comment {
         this.content = content;
     }
 
-    public LocalDate getDateCreated() {
-        return dateCreated;
+    public Post getPost() {
+        return post;
     }
 
-    public void setDateCreated(LocalDate dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Long getTimeCreated() {
+        return timeCreated;
+    }
+
+    public void setTimeCreated(Long timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<Like> likes) {
+        this.likes = likes;
     }
 
     @Override
