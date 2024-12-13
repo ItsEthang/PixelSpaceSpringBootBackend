@@ -69,7 +69,9 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("The user of id " + userId + " is not found"));
         post.setUser(user);
+        post.setTimeCreated(System.currentTimeMillis());
         postService.postCreate(post);
+
     }
 
 }

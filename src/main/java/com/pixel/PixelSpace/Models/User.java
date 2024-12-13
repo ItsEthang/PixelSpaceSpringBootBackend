@@ -40,11 +40,11 @@ public class User {
     private List<Post> posts;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonManagedReference
+    // @JsonManagedReference
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    @JsonManagedReference
+    // @JsonManagedReference
     private List<Like> likes;
 
     public User() {

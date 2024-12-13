@@ -17,12 +17,12 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @JsonBackReference
+    // @JsonBackReference
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    // @JsonBackReference
     private User user;
 
     @Column(length = 800)
@@ -32,7 +32,7 @@ public class Comment {
     private Long timeCreated;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    // @JsonManagedReference
     private List<Like> likes;
 
     public Comment() {
