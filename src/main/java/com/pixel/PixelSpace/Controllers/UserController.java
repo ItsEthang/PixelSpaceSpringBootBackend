@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Services.UserService;
 
@@ -62,6 +63,12 @@ public class UserController {
     @GetMapping("{id}")
     public ResponseEntity<User> userGetById(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(userService.getUserById(id));
+    }
+
+    @PostMapping("{id}/post")
+    public ResponseEntity<String> userMakePost(@PathVariable Integer id, @RequestBody Post post) {
+        userService.userMakePost(id, post);
+        return ResponseEntity.ok().body("User " + id + " made a post titled " + post.getTitle());
     }
 
     @PatchMapping("{id}")

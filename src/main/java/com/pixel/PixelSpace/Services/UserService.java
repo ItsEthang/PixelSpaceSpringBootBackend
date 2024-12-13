@@ -9,17 +9,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pixel.PixelSpace.Exceptions.ResourceNotFoundException;
+import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Repositories.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PostService postService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PostService postService) {
         this.userRepository = userRepository;
+        this.postService = postService;
     }
 
     public void userRegister(User user) {
@@ -56,6 +62,14 @@ public class UserService {
         userToUpdate.setEmail(email);
         userToUpdate.setProfileImg(profileImg);
         userRepository.save(userToUpdate);
+    }
+
+    @Transactional
+    public void userMakePost(Integer userId, Post post) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("The user of id " + userId + " is not found"));
+        post.setUser(user);
+        postService.postCreate(post);
     }
 
 }

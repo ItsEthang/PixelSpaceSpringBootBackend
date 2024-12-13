@@ -2,6 +2,8 @@ package com.pixel.PixelSpace.Models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +14,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Integer userId;
+
+    // @ManyToMany
+    // @JoinTable(name = "friendships", joinColumns = @JoinColumn(name =
+    // "user_id_1"), inverseJoinColumns = @JoinColumn(name = "user_id_2"))
+    // Set<User> friendships;
 
     @Column(name = "username", length = 50, nullable = false, unique = true)
     private String username;
@@ -29,12 +36,15 @@ public class User {
     private String profileImg;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonManagedReference
     private List<Post> posts;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonManagedReference
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonManagedReference
     private List<Like> likes;
 
     public User() {
@@ -52,6 +62,14 @@ public class User {
     public String getUsername() {
         return username;
     }
+
+    // public void setFriendships(Set<User> friendships) {
+    // this.friendships = friendships;
+    // }
+
+    // public Set<User> getFriendShips() {
+    // return friendships;
+    // }
 
     public void setUsername(String username) {
         this.username = username;

@@ -2,6 +2,9 @@ package com.pixel.PixelSpace.Models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -13,18 +16,11 @@ public class Post {
     private Integer postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     private String title;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     @Column(length = 6000)
     private String content;
@@ -33,9 +29,11 @@ public class Post {
     private Long timeCreated;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Like> likes;
 
     public Post() {
@@ -48,6 +46,14 @@ public class Post {
 
     public void setPostId(int postId) {
         this.postId = postId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
