@@ -36,8 +36,29 @@ public class Post {
     // @JsonManagedReference
     private List<Like> likes;
 
+    // ---Contructors---
     public Post() {
 
+    }
+
+    // posting
+    public Post(User user, String title, String content, Long timeCreated) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.timeCreated = timeCreated;
+    }
+
+    // getting
+    public Post(Integer postId, User user, String title, String content, Long timeCreated, List<Comment> comments,
+            List<Like> likes) {
+        this.postId = postId;
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.timeCreated = timeCreated;
+        this.comments = comments;
+        this.likes = likes;
     }
 
     public int getPostId() {

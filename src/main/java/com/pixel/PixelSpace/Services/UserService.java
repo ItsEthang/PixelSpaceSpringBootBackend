@@ -71,7 +71,6 @@ public class UserService {
         post.setUser(user);
         post.setTimeCreated(System.currentTimeMillis());
         postService.postCreate(post);
-
     }
 
 }

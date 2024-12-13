@@ -47,8 +47,34 @@ public class User {
     // @JsonManagedReference
     private List<Like> likes;
 
+    // ---Contructors---
     public User() {
 
+    }
+
+    // posting
+    public User(String username, String email, String password, String name, String bio, String profileImg) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.bio = bio;
+        this.profileImg = profileImg;
+    }
+
+    // getting
+    public User(Integer userId, String username, String email, String password, String name, String bio,
+            String profileImg, List<Post> posts, List<Comment> comments, List<Like> likes) {
+        this.userId = userId;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.bio = bio;
+        this.profileImg = profileImg;
+        this.posts = posts;
+        this.comments = comments;
+        this.likes = likes;
     }
 
     public int getUserId() {
