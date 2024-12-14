@@ -29,7 +29,7 @@ public class Post {
     private Long timeCreated;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
-    // @JsonManagedReference
+    @JsonManagedReference(value = "post-comment")
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
