@@ -40,4 +40,9 @@ public class CommentController {
     public ResponseEntity<User> commentGetUser(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(commentService.getCommentUser(id));
     }
+
+    @GetMapping("{id}/like")
+    public ResponseEntity<Integer> commentGetLikeCount(@PathVariable Integer id) {
+        return ResponseEntity.status(200).body(commentService.getLikeCount(id));
+    }
 }

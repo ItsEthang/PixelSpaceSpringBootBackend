@@ -69,8 +69,7 @@ public class PostService {
     }
 
     public Integer getLikeCount(Integer id) {
-        Post targetPost = postRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Post " + id + " is not found"));
+        Post targetPost = this.getPostById(id);
         return targetPost.getLikes().size();
     }
 

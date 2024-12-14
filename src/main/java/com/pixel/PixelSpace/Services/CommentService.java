@@ -51,4 +51,9 @@ public class CommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Comment " + commentId + " not found"));
     }
 
+    public Integer getLikeCount(Integer commentId) {
+        Comment targetComment = this.getCommentById(commentId);
+        return targetComment.getLikes().size();
+    }
+
 }
