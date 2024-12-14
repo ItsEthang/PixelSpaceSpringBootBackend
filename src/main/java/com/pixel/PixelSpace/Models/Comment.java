@@ -3,6 +3,7 @@ package com.pixel.PixelSpace.Models;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 
@@ -31,7 +32,7 @@ public class Comment {
     private Long timeCreated;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.ALL)
-    // @JsonManagedReference
+    @JsonManagedReference(value = "comment-like")
     private List<Like> likes;
 
     public Comment() {

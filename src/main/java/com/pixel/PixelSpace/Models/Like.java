@@ -14,17 +14,17 @@ public class Like {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    // @JsonBackReference
+    @JsonBackReference(value = "post-like")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = true)
-    // @JsonBackReference
+    @JsonBackReference(value = "comment-like")
     private Comment comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    // @JsonBackReference
+    @JsonBackReference(value = "user-like")
     private User user;
 
     public Like() {

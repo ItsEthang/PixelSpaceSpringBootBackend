@@ -33,7 +33,7 @@ public class Post {
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
-    // @JsonManagedReference
+    @JsonManagedReference(value = "post-like")
     private List<Like> likes;
 
     // ---Contructors---

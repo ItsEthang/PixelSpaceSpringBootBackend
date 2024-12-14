@@ -39,7 +39,7 @@ public class User {
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    // @JsonManagedReference
+    @JsonManagedReference(value = "user-like")
     private List<Like> likes;
 
     @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL, orphanRemoval = true)
