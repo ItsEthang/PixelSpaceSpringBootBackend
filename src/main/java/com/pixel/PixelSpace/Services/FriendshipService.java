@@ -1,5 +1,6 @@
 package com.pixel.PixelSpace.Services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,19 @@ public class FriendshipService {
 
     public Optional<Friendship> findFriendshipByBothUser(User user1, User user2) throws ResourceNotFoundException {
         return friendshipRepository.findByUser1AndUser2(user1, user2);
+    }
+
+    public List<Friendship> getAllFriendship() {
+        return friendshipRepository.findAll();
+    }
+
+    public Friendship getFriendshipById(Integer id) {
+
+        return friendshipRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("The friendship of id " + id + " is not found"));
+    }
+
+    public List<Friendship> getFriendshipOfUser1(User user1) {
+        return friendshipRepository.findAllByUser1(user1);
     }
 }

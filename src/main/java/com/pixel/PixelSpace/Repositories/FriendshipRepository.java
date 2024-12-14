@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.pixel.PixelSpace.Models.Friendship;
 import com.pixel.PixelSpace.Models.User;
 
-public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
+public interface FriendshipRepository extends JpaRepository<Friendship, Integer> {
 
     Optional<Friendship> findByUser1AndUser2(User user1, User user2);
 

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pixel.PixelSpace.Exceptions.InvalidOperationException;
+import com.pixel.PixelSpace.Models.Friendship;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Services.UserService;
@@ -65,6 +67,24 @@ public class UserController {
         return ResponseEntity.status(200).body(userService.getUserById(id));
     }
 
+    @GetMapping("{id}/friend")
+    public ResponseEntity<List<Friendship>> userGetFriend(@PathVariable Integer id) {
+        return ResponseEntity.status(200).body(userService.getUser1Friendship(id));
+    }
+
+    @PostMapping("{id}/friend/{id2}")
+    public ResponseEntity<String> userGetFriend(@PathVariable Integer id, @PathVariable Integer id2)
+            throws InvalidOperationException {
+        userService.createFriendship(id, id2);
+        return ResponseEntity.ok().body("User made friend with user " + id2 + "! How lucky :)");
+    }
+
+    @DeleteMapping("{id}/friend/{id2}")
+    public ResponseEntity<String> userDeleteFriend(@PathVariable Integer id, @PathVariable Integer id2) {
+        userService.deleteFriendship(id, id2);
+        return ResponseEntity.ok().body("User unfriended with user " + id2 + "! How sad :(");
+    }
+
     @PostMapping("{id}/post")
     public ResponseEntity<String> userMakePost(@PathVariable Integer id, @RequestBody Post post) {
         userService.userMakePost(id, post);
@@ -89,4 +109,5 @@ public class UserController {
     public String handleUnauthorized(AuthenticationException ex) {
         return ex.getMessage();
     }
+
 }

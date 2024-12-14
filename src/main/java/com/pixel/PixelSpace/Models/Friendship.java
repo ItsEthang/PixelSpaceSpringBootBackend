@@ -2,6 +2,9 @@ package com.pixel.PixelSpace.Models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,14 +20,16 @@ public class Friendship {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "FriendshipID")
-    private Long friendshipId;
+    private Integer friendshipId;
 
     @ManyToOne
     @JoinColumn(name = "UserID1", nullable = false)
+    @JsonBackReference(value = "initiated-friendship")
     private User user1;
 
     @ManyToOne
     @JoinColumn(name = "UserID2", nullable = false)
+    @JsonBackReference(value = "received-friendship")
     private User user2;
 
     @Column(name = "Timestamp")
@@ -41,11 +46,11 @@ public class Friendship {
         this.timestamp = LocalDateTime.now();
     }
 
-    public Long getFriendshipId() {
+    public Integer getFriendshipId() {
         return friendshipId;
     }
 
-    public void setFriendshipId(Long friendshipId) {
+    public void setFriendshipId(Integer friendshipId) {
         this.friendshipId = friendshipId;
     }
 

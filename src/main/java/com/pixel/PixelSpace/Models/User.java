@@ -43,9 +43,11 @@ public class User {
     private List<Like> likes;
 
     @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "initiated-friendship")
     private List<Friendship> initiatedFriendships;
 
     @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "received-friendship")
     private List<Friendship> receivedFriendships;
 
     // ---Contructors---
