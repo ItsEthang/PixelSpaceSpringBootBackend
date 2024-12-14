@@ -15,10 +15,11 @@ public class User {
     @Column(name = "user_id")
     private Integer userId;
 
-    // @ManyToMany
-    // @JoinTable(name = "friendships", joinColumns = @JoinColumn(name =
-    // "user_id_1"), inverseJoinColumns = @JoinColumn(name = "user_id_2"))
-    // Set<User> friendships;
+    @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friendship> initiatedFriendships;
+
+    @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friendship> receivedFriendships;
 
     @Column(name = "username", length = 50, nullable = false, unique = true)
     private String username;
@@ -89,14 +90,6 @@ public class User {
         return username;
     }
 
-    // public void setFriendships(Set<User> friendships) {
-    // this.friendships = friendships;
-    // }
-
-    // public Set<User> getFriendShips() {
-    // return friendships;
-    // }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -163,6 +156,38 @@ public class User {
 
     public void setLikes(List<Like> likes) {
         this.likes = likes;
+    }
+
+    public List<Friendship> getInitiatedFriendships() {
+        return initiatedFriendships;
+    }
+
+    public void setInitiatedFriendships(List<Friendship> initiatedFriendships) {
+        this.initiatedFriendships = initiatedFriendships;
+    }
+
+    public List<Friendship> getReceivedFriendships() {
+        return receivedFriendships;
+    }
+
+    public void setReceivedFriendships(List<Friendship> receivedFriendships) {
+        this.receivedFriendships = receivedFriendships;
+    }
+
+    public void addInitiatedFriendship(Friendship friendship) {
+        this.initiatedFriendships.add(friendship);
+    }
+
+    public void addReceivedFriendship(Friendship friendship) {
+        this.receivedFriendships.add(friendship);
+    }
+
+    public void removeInitiatedFriendship(Friendship friendship) {
+        this.initiatedFriendships.remove(friendship);
+    }
+
+    public void removeReceivedFriendship(Friendship friendship) {
+        this.receivedFriendships.remove(friendship);
     }
 
     @Override
