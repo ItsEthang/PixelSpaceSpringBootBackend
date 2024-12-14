@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pixel.PixelSpace.Exceptions.InvalidOperationException;
+import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Friendship;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
@@ -96,6 +97,13 @@ public class UserController {
     public ResponseEntity<String> userMakePost(@PathVariable Integer id, @RequestBody Post post) {
         userService.userMakePost(id, post);
         return ResponseEntity.ok().body("User " + id + " made a post titled " + post.getTitle());
+    }
+
+    @PostMapping("{userId}/post/{postId}/comment")
+    public ResponseEntity<String> userMakeComment(@PathVariable Integer userId, @PathVariable Integer postId,
+            @RequestBody Comment comment) {
+        userService.userMakeComment(userId, postId, comment);
+        return ResponseEntity.ok().body("User " + userId + " made a comment.");
     }
 
     @GetMapping("{id}/post")

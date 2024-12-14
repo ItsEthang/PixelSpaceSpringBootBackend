@@ -3,7 +3,6 @@ package com.pixel.PixelSpace.Models;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 
@@ -16,12 +15,12 @@ public class Comment {
     private Integer commentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     @JsonBackReference(value = "post-comment")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference(value = "user-comment")
     private User user;
 
@@ -37,6 +36,24 @@ public class Comment {
 
     public Comment() {
 
+    }
+
+    // posting
+    public Comment(Post post, User user, String content, Long timeCreated) {
+        this.post = post;
+        this.user = user;
+        this.content = content;
+        this.timeCreated = timeCreated;
+    }
+
+    // getting
+    public Comment(Integer commentId, Post post, User user, String content, Long timeCreated, List<Like> likes) {
+        this.commentId = commentId;
+        this.post = post;
+        this.user = user;
+        this.content = content;
+        this.timeCreated = timeCreated;
+        this.likes = likes;
     }
 
     public int getCommentId() {

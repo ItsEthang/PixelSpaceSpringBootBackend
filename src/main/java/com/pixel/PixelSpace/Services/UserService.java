@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.pixel.PixelSpace.Exceptions.InvalidOperationException;
 import com.pixel.PixelSpace.Exceptions.ResourceNotFoundException;
+import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Friendship;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
@@ -26,11 +27,15 @@ public class UserService {
     private PostService postService;
     @Autowired
     private FriendshipService friendshipService;
+    @Autowired
+    private CommentService commentService;
 
-    public UserService(UserRepository userRepository, PostService postService, FriendshipService friendshipService) {
+    public UserService(UserRepository userRepository, PostService postService, FriendshipService friendshipService,
+            CommentService commentService) {
         this.userRepository = userRepository;
         this.postService = postService;
         this.friendshipService = friendshipService;
+        this.commentService = commentService;
     }
 
     public void userRegister(User user) {
@@ -69,6 +74,7 @@ public class UserService {
         userRepository.save(userToUpdate);
     }
 
+    // Post Actions
     @Transactional
     public void userMakePost(Integer userId, Post post) {
         User user = userRepository.findById(userId)
@@ -78,6 +84,24 @@ public class UserService {
         postService.postCreate(post);
     }
 
+    public List<Post> getUserPosts(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
+        return postService.getPostByUser(user);
+    }
+
+    // Comment Actions
+    public void userMakeComment(Integer userId, Integer postId, Comment comment) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("The user of id " + userId + " is not found"));
+        Post post = postService.getPostById(postId);
+        comment.setUser(user);
+        comment.setPost(post);
+        comment.setTimeCreated(System.currentTimeMillis());
+        commentService.createComment(comment);
+    }
+
+    // Friendship Actions
     @Transactional
     public void createFriendship(Integer userId1, Integer userId2) throws InvalidOperationException {
         User user1 = userRepository.findById(userId1)
@@ -121,12 +145,6 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User1 not found"));
 
         return friendshipService.getFriendshipOfUser1(user1);
-    }
-
-    public List<Post> getUserPosts(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
-        return postService.getPostByUser(user);
     }
 
 }
