@@ -59,6 +59,11 @@ public class PostController {
         return ResponseEntity.status(200).body(postService.getPostComment(id));
     }
 
+    @GetMapping("{id}/like")
+    public ResponseEntity<Integer> postGetLikeCount(@PathVariable Integer id) {
+        return ResponseEntity.status(200).body(postService.getLikeCount(id));
+    }
+
     @PatchMapping("{id}")
     public ResponseEntity<String> postPatch(@PathVariable Integer id, @RequestParam String title,
             @RequestParam String content) {
