@@ -38,6 +38,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // User registration
     @PostMapping("")
     public ResponseEntity<String> userRegister(@RequestBody User user) {
         List<User> allUsers = userService.getAllUsers();
@@ -53,12 +54,14 @@ public class UserController {
         return ResponseEntity.status(400).body("An unknown error occurred during registering");
     }
 
+    // User authentication
     @PostMapping("login")
     public ResponseEntity<Void> userLogin(@RequestBody User user) throws AuthenticationException {
         userService.userLogin(user.getUsername(), user.getPassword());
         return ResponseEntity.noContent().header("username", user.getUsername()).build();
     }
 
+    // Get User Profile Management
     @GetMapping("")
     public ResponseEntity<List<User>> userGetAll() {
         return ResponseEntity.status(200).body(userService.getAllUsers());
@@ -69,6 +72,20 @@ public class UserController {
         return ResponseEntity.status(200).body(userService.getUserById(id));
     }
 
+    @PatchMapping("{id}")
+    public ResponseEntity<String> userPatch(@PathVariable Integer id, @RequestParam String name,
+            @RequestParam String bio, @RequestParam String email, @RequestParam String profileImg) {
+        userService.userUpdate(id, name, bio, email, profileImg);
+        return ResponseEntity.ok().body("User updated");
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> userDeleteById(@PathVariable Integer id) {
+        userService.userDelete(id);
+        return ResponseEntity.ok().body("User " + id + " deleted");
+    }
+
+    // ---Friendship Actions---
     // Get followers
     @GetMapping("{id}/follower")
     public ResponseEntity<List<User>> userGetFollowers(@PathVariable Integer id) {
@@ -106,10 +123,28 @@ public class UserController {
         return ResponseEntity.ok().body("User unfriended with user " + id2 + "! How sad :(");
     }
 
+    // ---Post Actions---
     @PostMapping("{id}/post")
     public ResponseEntity<String> userMakePost(@PathVariable Integer id, @RequestBody Post post) {
         userService.userMakePost(id, post);
         return ResponseEntity.ok().body("User " + id + " made a post titled " + post.getTitle());
+    }
+
+    @GetMapping("{id}/post")
+    public ResponseEntity<List<Post>> userGetPost(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(userService.getUserPosts(id));
+    }
+
+    @PostMapping("{userId}/post/{postId}/like")
+    public ResponseEntity<String> userLikePost(@PathVariable Integer userId, @PathVariable Integer postId) {
+        userService.likePost(userId, postId);
+        return ResponseEntity.ok().body("User " + userId + " liked Post " + postId);
+    }
+
+    @DeleteMapping("{userId}/post/{postId}/like")
+    public ResponseEntity<String> userUnlikePost(@PathVariable Integer userId, @PathVariable Integer postId) {
+        userService.unlikePost(userId, postId);
+        return ResponseEntity.ok().body("User " + userId + " unliked Post " + postId);
     }
 
     @PostMapping("{userId}/post/{postId}/comment")
@@ -119,23 +154,7 @@ public class UserController {
         return ResponseEntity.ok().body("User " + userId + " made a comment.");
     }
 
-    @GetMapping("{id}/post")
-    public ResponseEntity<List<Post>> userGetPost(@PathVariable Integer id) {
-        return ResponseEntity.ok().body(userService.getUserPosts(id));
-    }
-
-    @PatchMapping("{id}")
-    public ResponseEntity<String> userPatch(@PathVariable Integer id, @RequestParam String name,
-            @RequestParam String bio, @RequestParam String email, @RequestParam String profileImg) {
-        userService.userUpdate(id, name, bio, email, profileImg);
-        return ResponseEntity.ok().body("User updated");
-    }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> userDeleteById(@PathVariable Integer id) {
-        userService.userDelete(id);
-        return ResponseEntity.ok().body("User " + id + " deleted");
-    }
+    // ---Comment Actions---
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

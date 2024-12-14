@@ -31,6 +31,24 @@ public class Like {
 
     }
 
+    public Like(Post post, User user) {
+        this.post = post;
+        this.user = user;
+    }
+
+    public Like(Post post, Comment comment, User user) {
+        this.post = post;
+        this.comment = comment;
+        this.user = user;
+    }
+
+    public Like(Integer likeId, Post post, Comment comment, User user) {
+        this.likeId = likeId;
+        this.post = post;
+        this.comment = comment;
+        this.user = user;
+    }
+
     public int getLikeId() {
         return likeId;
     }

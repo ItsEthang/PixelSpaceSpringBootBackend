@@ -46,4 +46,9 @@ public class CommentService {
         return commentRepository.findAllByPost(post);
     }
 
+    public Comment getCommentById(Integer commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment " + commentId + " not found"));
+    }
+
 }

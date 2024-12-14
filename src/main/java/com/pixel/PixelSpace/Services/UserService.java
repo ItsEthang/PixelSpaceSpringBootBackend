@@ -12,6 +12,7 @@ import com.pixel.PixelSpace.Exceptions.InvalidOperationException;
 import com.pixel.PixelSpace.Exceptions.ResourceNotFoundException;
 import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Friendship;
+import com.pixel.PixelSpace.Models.Like;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Repositories.UserRepository;
@@ -29,13 +30,16 @@ public class UserService {
     private FriendshipService friendshipService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private LikeService likeService;
 
     public UserService(UserRepository userRepository, PostService postService, FriendshipService friendshipService,
-            CommentService commentService) {
+            CommentService commentService, LikeService likeService) {
         this.userRepository = userRepository;
         this.postService = postService;
         this.friendshipService = friendshipService;
         this.commentService = commentService;
+        this.likeService = likeService;
     }
 
     public void userRegister(User user) {
@@ -88,6 +92,38 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
         return postService.getPostByUser(user);
+    }
+
+    public void likePost(Integer userId, Integer postId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
+        Post post = postService.getPostById(postId);
+        Optional<Like> like = likeService.findLikeByUserAndPost(user, post);
+        if (like.isPresent()) {
+            throw new InvalidOperationException("You already liked the post");
+        }
+        Like newLike = new Like(post, user);
+        likeService.createLike(newLike);
+    }
+
+    public void unlikePost(Integer userId, Integer postId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
+        Post post = postService.getPostById(postId);
+        Like like = likeService.findLikeByUserAndPost(user, post)
+                .orElseThrow(() -> new ResourceNotFoundException("User did not like this post yet"));
+        likeService.deleteLike(like);
+    }
+
+    public void unlikePostComment(Integer userId, Integer postId, Integer commentId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
+        Post post = postService.getPostById(postId);
+        Comment comment = commentService.getCommentById(commentId);
+        Like like = likeService.findLikeByUserAndPostAndComment(user, post, comment)
+                .orElseThrow(() -> new ResourceNotFoundException("User did not like this post\'s comment yet"));
+        ;
+        likeService.deleteLike(like);
     }
 
     // Comment Actions
