@@ -69,15 +69,28 @@ public class UserController {
         return ResponseEntity.status(200).body(userService.getUserById(id));
     }
 
-    @GetMapping("{id}/follow")
-    public ResponseEntity<List<User>> userGetFriend(@PathVariable Integer id) {
+    // Get followers
+    @GetMapping("{id}/follower")
+    public ResponseEntity<List<User>> userGetFollowers(@PathVariable Integer id) {
         User user = userService.getUserById(id);
         List<Friendship> receivedFriends = user.getReceivedFriendships();
-        List<User> allFriends = new LinkedList<>();
+        List<User> allFollowers = new LinkedList<>();
         receivedFriends.forEach((friendship) -> {
-            allFriends.add(friendship.getUser1());
+            allFollowers.add(friendship.getUser1());
         });
-        return ResponseEntity.status(200).body(allFriends);
+        return ResponseEntity.status(200).body(allFollowers);
+    }
+
+    // Get following
+    @GetMapping("{id}/following")
+    public ResponseEntity<List<User>> userGetFollowing(@PathVariable Integer id) {
+        User user = userService.getUserById(id);
+        List<Friendship> initiatedFriends = user.getInitiatedFriendships();
+        List<User> allFollowings = new LinkedList<>();
+        initiatedFriends.forEach((friendship) -> {
+            allFollowings.add(friendship.getUser2());
+        });
+        return ResponseEntity.status(200).body(allFollowings);
     }
 
     @PostMapping("{id}/follow/{id2}")
