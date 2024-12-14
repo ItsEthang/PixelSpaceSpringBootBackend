@@ -99,7 +99,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteFriendship(Integer userId1, Integer userId2) throws ResourceNotFoundException {
+    public void deleteFriendship(Integer userId1, Integer userId2) throws InvalidOperationException {
         User user1 = userRepository.findById(userId1)
                 .orElseThrow(() -> new ResourceNotFoundException("User1 not found"));
         User user2 = userRepository.findById(userId2)
@@ -111,6 +111,8 @@ public class UserService {
             friendshipService.deleteFriendship(friendship);
             user1.removeInitiatedFriendship(friendship);
             user2.removeReceivedFriendship(friendship);
+        } else {
+            throw new InvalidOperationException("You are not following this user yet.");
         }
     }
 

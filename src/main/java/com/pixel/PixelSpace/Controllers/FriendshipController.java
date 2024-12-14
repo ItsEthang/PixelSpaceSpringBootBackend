@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pixel.PixelSpace.Models.Friendship;
+import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Services.FriendshipService;
 
 @RestController
@@ -28,7 +29,8 @@ public class FriendshipController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Friendship> friendshipGetById(@PathVariable Integer id) {
-        return ResponseEntity.status(200).body(friendshipService.getFriendshipById(id));
+    public ResponseEntity<User> friendshipGetById(@PathVariable Integer id) {
+        Friendship friendship = friendshipService.getFriendshipById(id);
+        return ResponseEntity.status(200).body(friendship.getUser1());
     }
 }
