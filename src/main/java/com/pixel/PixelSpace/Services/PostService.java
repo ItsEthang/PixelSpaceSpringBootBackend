@@ -1,5 +1,6 @@
 package com.pixel.PixelSpace.Services;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.pixel.PixelSpace.Exceptions.ResourceNotFoundException;
 import com.pixel.PixelSpace.Models.Comment;
+import com.pixel.PixelSpace.Models.Like;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Repositories.PostRepository;
@@ -70,7 +72,16 @@ public class PostService {
 
     public Integer getLikeCount(Integer id) {
         Post targetPost = this.getPostById(id);
-        return targetPost.getLikes().size();
+        List<Like> allLikes = targetPost.getLikes();
+        Integer res = 0;
+
+        for (Like like : allLikes) {
+            if (like.getComment() == null) {
+                res += 1;
+            }
+        }
+
+        return res;
     }
 
 }
