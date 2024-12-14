@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pixel.PixelSpace.Models.Comment;
+import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Services.CommentService;
 
 @RestController
@@ -33,5 +34,10 @@ public class CommentController {
     public ResponseEntity<String> postDelete(@PathVariable Integer id) {
         commentService.deleteComment(id);
         return ResponseEntity.ok().body("Comment deleted");
+    }
+
+    @GetMapping("{id}/user")
+    public ResponseEntity<User> commentGetUser(@PathVariable Integer id) {
+        return ResponseEntity.status(200).body(commentService.getCommentUser(id));
     }
 }

@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Post;
+import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Services.PostService;
 
 @RestController
@@ -45,6 +47,16 @@ public class PostController {
     @GetMapping("{id}")
     public ResponseEntity<Post> postGetById(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(postService.getPostById(id));
+    }
+
+    @GetMapping("{id}/user")
+    public ResponseEntity<User> postGetUser(@PathVariable Integer id) {
+        return ResponseEntity.status(200).body(postService.getPostUser(id));
+    }
+
+    @GetMapping("{id}/comment")
+    public ResponseEntity<List<Comment>> postGetComment(@PathVariable Integer id) {
+        return ResponseEntity.status(200).body(postService.getPostComment(id));
     }
 
     @PatchMapping("{id}")

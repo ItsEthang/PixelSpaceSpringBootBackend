@@ -15,7 +15,7 @@ public class Post {
     @Column(name = "post_id")
     private Integer postId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference(value = "post")
     private User user;

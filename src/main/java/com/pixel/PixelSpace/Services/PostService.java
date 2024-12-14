@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pixel.PixelSpace.Exceptions.ResourceNotFoundException;
+import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Repositories.PostRepository;
@@ -14,9 +15,12 @@ import com.pixel.PixelSpace.Repositories.PostRepository;
 public class PostService {
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private CommentService commentService;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, CommentService commentService) {
         this.postRepository = postRepository;
+        this.commentService = commentService;
     }
 
     public List<Post> getAllPosts() {
@@ -32,6 +36,18 @@ public class PostService {
                 .orElseThrow(() -> new ResourceNotFoundException("The post of id " + postId + " is not found"));
     }
 
+    public User getPostUser(Integer postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post" + postId + " not found"));
+        return post.getUser();
+    }
+
+    public List<Comment> getPostComment(Integer postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post" + postId + " not found"));
+        return commentService.getAllCommentByPost(post);
+    }
+
     public List<Post> getPostByUser(User user) {
         return postRepository.findAllByUser(user);
     }
@@ -39,6 +55,8 @@ public class PostService {
     public void postDelete(Integer postId) {
         if (postRepository.findById(postId).isPresent()) {
             postRepository.deleteById(postId);
+        } else {
+            throw new ResourceNotFoundException("Post " + postId + " not found");
         }
     }
 
