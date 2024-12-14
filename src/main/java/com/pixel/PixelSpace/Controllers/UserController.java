@@ -68,7 +68,7 @@ public class UserController {
         return ResponseEntity.status(200).body(userService.getUserById(id));
     }
 
-    @GetMapping("{id}/followers")
+    @GetMapping("{id}/follow")
     public ResponseEntity<List<User>> userGetFriend(@PathVariable Integer id) {
         User user = userService.getUserById(id);
         List<Friendship> receivedFriends = user.getReceivedFriendships();
@@ -86,7 +86,7 @@ public class UserController {
         return ResponseEntity.ok().body("User made friend with user " + id2 + "! How lucky :)");
     }
 
-    @DeleteMapping("{id}/unfollow/{id2}")
+    @DeleteMapping("{id}/follow/{id2}")
     public ResponseEntity<String> userDeleteFriend(@PathVariable Integer id, @PathVariable Integer id2) {
         userService.deleteFriendship(id, id2);
         return ResponseEntity.ok().body("User unfriended with user " + id2 + "! How sad :(");
@@ -96,6 +96,11 @@ public class UserController {
     public ResponseEntity<String> userMakePost(@PathVariable Integer id, @RequestBody Post post) {
         userService.userMakePost(id, post);
         return ResponseEntity.ok().body("User " + id + " made a post titled " + post.getTitle());
+    }
+
+    @GetMapping("{id}/post")
+    public ResponseEntity<List<Post>> userGetPost(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(userService.getUserPosts(id));
     }
 
     @PatchMapping("{id}")

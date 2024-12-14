@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.pixel.PixelSpace.Exceptions.ResourceNotFoundException;
 import com.pixel.PixelSpace.Models.Post;
+import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Repositories.PostRepository;
 
 @Service
@@ -29,6 +30,10 @@ public class PostService {
     public Post getPostById(Integer postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("The post of id " + postId + " is not found"));
+    }
+
+    public List<Post> getPostByUser(User user) {
+        return postRepository.findAllByUser(user);
     }
 
     public void postDelete(Integer postId) {

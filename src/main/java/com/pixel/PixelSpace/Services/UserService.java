@@ -123,4 +123,10 @@ public class UserService {
         return friendshipService.getFriendshipOfUser1(user1);
     }
 
+    public List<Post> getUserPosts(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
+        return postService.getPostByUser(user);
+    }
+
 }
