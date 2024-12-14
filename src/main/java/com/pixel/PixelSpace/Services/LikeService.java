@@ -3,7 +3,6 @@ package com.pixel.PixelSpace.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pixel.PixelSpace.Exceptions.ResourceNotFoundException;
 import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Like;
 import com.pixel.PixelSpace.Models.Post;

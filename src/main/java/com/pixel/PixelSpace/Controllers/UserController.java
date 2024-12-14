@@ -147,6 +147,8 @@ public class UserController {
         return ResponseEntity.ok().body("User " + userId + " unliked Post " + postId);
     }
 
+    // ---Comment Actions---
+
     @PostMapping("{userId}/post/{postId}/comment")
     public ResponseEntity<String> userMakeComment(@PathVariable Integer userId, @PathVariable Integer postId,
             @RequestBody Comment comment) {
@@ -154,7 +156,19 @@ public class UserController {
         return ResponseEntity.ok().body("User " + userId + " made a comment.");
     }
 
-    // ---Comment Actions---
+    @PostMapping("{userId}/post/{postId}/comment/{commentId}/like")
+    public ResponseEntity<String> userLikeComment(@PathVariable Integer userId, @PathVariable Integer postId,
+            @PathVariable Integer commentId) {
+        userService.likePostComment(userId, postId, commentId);
+        return ResponseEntity.ok().body("User " + userId + " liked comment " + commentId);
+    }
+
+    @DeleteMapping("{userId}/post/{postId}/comment/{commentId}/like")
+    public ResponseEntity<String> userUnlikeComment(@PathVariable Integer userId, @PathVariable Integer postId,
+            @PathVariable Integer commentId) {
+        userService.unlikePostComment(userId, postId, commentId);
+        return ResponseEntity.ok().body("User " + userId + " unliked comment " + commentId);
+    }
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

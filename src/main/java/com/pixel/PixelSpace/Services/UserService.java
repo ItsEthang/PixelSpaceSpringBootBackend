@@ -42,6 +42,8 @@ public class UserService {
         this.likeService = likeService;
     }
 
+    // --Profile Management----
+
     public void userRegister(User user) {
         userRepository.save(user);
     }
@@ -94,6 +96,7 @@ public class UserService {
         return postService.getPostByUser(user);
     }
 
+    @Transactional
     public void likePost(Integer userId, Integer postId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
@@ -106,6 +109,7 @@ public class UserService {
         likeService.createLike(newLike);
     }
 
+    @Transactional
     public void unlikePost(Integer userId, Integer postId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
@@ -115,6 +119,33 @@ public class UserService {
         likeService.deleteLike(like);
     }
 
+    // ----Comment Actions----
+    @Transactional
+    public void userMakeComment(Integer userId, Integer postId, Comment comment) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("The user of id " + userId + " is not found"));
+        Post post = postService.getPostById(postId);
+        comment.setUser(user);
+        comment.setPost(post);
+        comment.setTimeCreated(System.currentTimeMillis());
+        commentService.createComment(comment);
+    }
+
+    @Transactional
+    public void likePostComment(Integer userId, Integer postId, Integer commentId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
+        Post post = postService.getPostById(postId);
+        Comment comment = commentService.getCommentById(commentId);
+        Optional<Like> like = likeService.findLikeByUserAndPostAndComment(user, post, comment);
+        if (like.isPresent()) {
+            throw new InvalidOperationException("This user already liked this comment of this post");
+        }
+        Like newLike = new Like(post, comment, user);
+        likeService.createLike(newLike);
+    }
+
+    @Transactional
     public void unlikePostComment(Integer userId, Integer postId, Integer commentId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User" + userId + " not found"));
@@ -126,18 +157,7 @@ public class UserService {
         likeService.deleteLike(like);
     }
 
-    // Comment Actions
-    public void userMakeComment(Integer userId, Integer postId, Comment comment) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("The user of id " + userId + " is not found"));
-        Post post = postService.getPostById(postId);
-        comment.setUser(user);
-        comment.setPost(post);
-        comment.setTimeCreated(System.currentTimeMillis());
-        commentService.createComment(comment);
-    }
-
-    // Friendship Actions
+    // -----Friendship Actions-----
     @Transactional
     public void createFriendship(Integer userId1, Integer userId2) throws InvalidOperationException {
         User user1 = userRepository.findById(userId1)
