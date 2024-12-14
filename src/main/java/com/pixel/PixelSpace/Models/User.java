@@ -15,12 +15,6 @@ public class User {
     @Column(name = "user_id")
     private Integer userId;
 
-    @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Friendship> initiatedFriendships;
-
-    @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Friendship> receivedFriendships;
-
     @Column(name = "username", length = 50, nullable = false, unique = true)
     private String username;
 
@@ -47,6 +41,12 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     // @JsonManagedReference
     private List<Like> likes;
+
+    @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friendship> initiatedFriendships;
+
+    @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friendship> receivedFriendships;
 
     // ---Contructors---
     public User() {

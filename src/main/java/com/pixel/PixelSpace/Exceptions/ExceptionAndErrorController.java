@@ -26,4 +26,10 @@ public class ExceptionAndErrorController {
     public String handleUnauthorized(UnauthorizedException ex) {
         return ex.getMessage();
     }
+
+    @ExceptionHandler(InvalidOperationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleInvalidOperation(InvalidOperationException ex) {
+        return ex.getMessage();
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pixel.PixelSpace.Exceptions.ResourceNotFoundException;
+import com.pixel.PixelSpace.Models.Friendship;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Repositories.UserRepository;
@@ -22,10 +23,13 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private PostService postService;
+    @Autowired
+    private FriendshipService friendshipService;
 
-    public UserService(UserRepository userRepository, PostService postService) {
+    public UserService(UserRepository userRepository, PostService postService, FriendshipService friendshipService) {
         this.userRepository = userRepository;
         this.postService = postService;
+        this.friendshipService = friendshipService;
     }
 
     public void userRegister(User user) {
@@ -71,6 +75,37 @@ public class UserService {
         post.setUser(user);
         post.setTimeCreated(System.currentTimeMillis());
         postService.postCreate(post);
+    }
+
+    @Transactional
+    public void createFriendship(Integer userId1, Integer userId2) throws ResourceNotFoundException {
+        User user1 = userRepository.findById(userId1)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user2 = userRepository.findById(userId2)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!user1.equals(user2)) {
+            Friendship friendship = new Friendship(user1, user2);
+            friendshipService.createFriendship(friendship);
+            user1.addInitiatedFriendship(friendship);
+            user2.addReceivedFriendship(friendship);
+        }
+    }
+
+    @Transactional
+    public void deleteFriendship(Integer userId1, Integer userId2) throws ResourceNotFoundException {
+        User user1 = userRepository.findById(userId1)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user2 = userRepository.findById(userId2)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Optional<Friendship> optionalFriendship = friendshipService.findFriendshipByBothUser(user1, user2);
+        if (optionalFriendship.isPresent()) {
+            Friendship friendship = optionalFriendship.get();
+            friendshipService.deleteFriendship(friendship);
+            user1.removeInitiatedFriendship(friendship);
+            user2.removeReceivedFriendship(friendship);
+        }
     }
 
 }
