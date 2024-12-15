@@ -28,6 +28,7 @@ import com.pixel.PixelSpace.Models.RequestBodies.UserFollowRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPatchRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPostRequest;
 import com.pixel.PixelSpace.Models.ResponseEntities.UserInfoResponse;
+import com.pixel.PixelSpace.Models.ResponseEntities.UserResponse;
 import com.pixel.PixelSpace.Services.UserService;
 
 @RestController
@@ -102,24 +103,28 @@ public class UserController {
     // ---Friendship Actions---
     // Get followers
     @GetMapping("follower")
-    public ResponseEntity<List<User>> userGetFollowers(@RequestHeader String userId) {
+    public ResponseEntity<List<UserResponse>> userGetFollowers(@RequestHeader String userId) {
         User user = userService.getUserById(Integer.valueOf(userId));
         List<Friendship> receivedFriends = user.getReceivedFriendships();
-        List<User> allFollowers = new LinkedList<>();
+        List<UserResponse> allFollowers = new LinkedList<>();
         receivedFriends.forEach((friendship) -> {
-            allFollowers.add(friendship.getUser1());
+            User follower = friendship.getUser1();
+            UserResponse res = new UserResponse(follower.getName(), follower.getProfileImg());
+            allFollowers.add(res);
         });
         return ResponseEntity.status(200).body(allFollowers);
     }
 
     // Get following
     @GetMapping("following")
-    public ResponseEntity<List<User>> userGetFollowing(@RequestHeader String userId) {
+    public ResponseEntity<List<UserResponse>> userGetFollowing(@RequestHeader String userId) {
         User user = userService.getUserById(Integer.valueOf(userId));
         List<Friendship> initiatedFriends = user.getInitiatedFriendships();
-        List<User> allFollowings = new LinkedList<>();
+        List<UserResponse> allFollowings = new LinkedList<>();
         initiatedFriends.forEach((friendship) -> {
-            allFollowings.add(friendship.getUser2());
+            User following = friendship.getUser2();
+            UserResponse res = new UserResponse(following.getName(), following.getProfileImg());
+            allFollowings.add(res);
         });
         return ResponseEntity.status(200).body(allFollowings);
     }
