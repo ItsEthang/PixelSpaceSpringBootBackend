@@ -24,6 +24,7 @@ import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Friendship;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
+import com.pixel.PixelSpace.Models.RequestBodies.UserFollowRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPatchRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserRequest;
 import com.pixel.PixelSpace.Services.UserService;
@@ -89,9 +90,9 @@ public class UserController {
 
     // ---Friendship Actions---
     // Get followers
-    @GetMapping("{id}/follower")
-    public ResponseEntity<List<User>> userGetFollowers(@PathVariable Integer id) {
-        User user = userService.getUserById(id);
+    @GetMapping("follower")
+    public ResponseEntity<List<User>> userGetFollowers(@RequestBody UserRequest request) {
+        User user = userService.getUserById(request.getUserId());
         List<Friendship> receivedFriends = user.getReceivedFriendships();
         List<User> allFollowers = new LinkedList<>();
         receivedFriends.forEach((friendship) -> {
@@ -101,9 +102,9 @@ public class UserController {
     }
 
     // Get following
-    @GetMapping("{id}/following")
-    public ResponseEntity<List<User>> userGetFollowing(@PathVariable Integer id) {
-        User user = userService.getUserById(id);
+    @GetMapping("following")
+    public ResponseEntity<List<User>> userGetFollowing(@RequestBody UserRequest request) {
+        User user = userService.getUserById(request.getUserId());
         List<Friendship> initiatedFriends = user.getInitiatedFriendships();
         List<User> allFollowings = new LinkedList<>();
         initiatedFriends.forEach((friendship) -> {
@@ -112,17 +113,17 @@ public class UserController {
         return ResponseEntity.status(200).body(allFollowings);
     }
 
-    @PostMapping("{id}/follow/{id2}")
-    public ResponseEntity<String> userGetFriend(@PathVariable Integer id, @PathVariable Integer id2)
+    @PostMapping("follow")
+    public ResponseEntity<String> userGetFriend(@RequestBody UserFollowRequest request)
             throws InvalidOperationException {
-        userService.createFriendship(id, id2);
-        return ResponseEntity.ok().body("User made friend with user " + id2 + "! How lucky :)");
+        userService.createFriendship(request.getUserId(), request.getUserId2());
+        return ResponseEntity.ok().body("User made friend with user " + request.getUserId2() + "! How lucky :)");
     }
 
-    @DeleteMapping("{id}/follow/{id2}")
-    public ResponseEntity<String> userDeleteFriend(@PathVariable Integer id, @PathVariable Integer id2) {
-        userService.deleteFriendship(id, id2);
-        return ResponseEntity.ok().body("User unfriended with user " + id2 + "! How sad :(");
+    @DeleteMapping("follow")
+    public ResponseEntity<String> userDeleteFriend(@RequestBody UserFollowRequest request) {
+        userService.deleteFriendship(request.getUserId(), request.getUserId2());
+        return ResponseEntity.ok().body("User unfriended with user " + request.getUserId2() + "! How sad :(");
     }
 
     // ---Post Actions---
