@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,6 @@ import com.pixel.PixelSpace.Models.RequestBodies.UserCommentRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserFollowRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPatchRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPostRequest;
-import com.pixel.PixelSpace.Models.RequestBodies.UserRequest;
 import com.pixel.PixelSpace.Models.ResponseEntities.UserInfoResponse;
 import com.pixel.PixelSpace.Services.UserService;
 
@@ -60,8 +60,8 @@ public class UserController {
     // User authentication
     @PostMapping("login")
     public ResponseEntity<Void> userLogin(@RequestBody User user) throws AuthenticationException {
-        userService.userLogin(user.getUsername(), user.getPassword());
-        return ResponseEntity.noContent().header("username", user.getUsername()).build();
+        User loggedUser = userService.userLogin(user.getUsername(), user.getPassword());
+        return ResponseEntity.noContent().header("userId", Integer.toString(loggedUser.getUserId())).build();
     }
 
     // Get User Profile Management
@@ -78,32 +78,32 @@ public class UserController {
     }
 
     @GetMapping("")
-    public ResponseEntity<UserInfoResponse> userGetById(@RequestBody UserRequest request) {
-        User user = userService.getUserById(request.getUserId());
+    public ResponseEntity<UserInfoResponse> userGetById(@RequestHeader String userId) {
+        User user = userService.getUserById(Integer.valueOf(userId));
         UserInfoResponse userInfo = new UserInfoResponse(user.getName(), user.getProfileImg(), user.getUsername(),
                 user.getBio());
         return ResponseEntity.status(200).body(userInfo);
     }
 
     @PatchMapping("")
-    public ResponseEntity<String> userPatch(@RequestBody UserPatchRequest request) {
-        userService.userUpdate(request.getUserId(), request.getName(), request.getBio(), request.getEmail(),
+    public ResponseEntity<String> userPatch(@RequestHeader String userId, @RequestBody UserPatchRequest request) {
+        userService.userUpdate(Integer.valueOf(userId), request.getName(), request.getBio(), request.getEmail(),
                 request.getProfileImg());
         return ResponseEntity.ok().body("User updated");
     }
 
     @DeleteMapping("")
-    public ResponseEntity<String> userDeleteById(@RequestBody UserRequest request) {
-        Integer userId = request.getUserId();
-        userService.userDelete(userId);
+    public ResponseEntity<String> userDeleteById(@RequestHeader String userId) {
+        Integer user1Id = Integer.valueOf(userId);
+        userService.userDelete(user1Id);
         return ResponseEntity.ok().body("User " + userId + " deleted");
     }
 
     // ---Friendship Actions---
     // Get followers
     @GetMapping("follower")
-    public ResponseEntity<List<User>> userGetFollowers(@RequestBody UserRequest request) {
-        User user = userService.getUserById(request.getUserId());
+    public ResponseEntity<List<User>> userGetFollowers(@RequestHeader String userId) {
+        User user = userService.getUserById(Integer.valueOf(userId));
         List<Friendship> receivedFriends = user.getReceivedFriendships();
         List<User> allFollowers = new LinkedList<>();
         receivedFriends.forEach((friendship) -> {
@@ -114,8 +114,8 @@ public class UserController {
 
     // Get following
     @GetMapping("following")
-    public ResponseEntity<List<User>> userGetFollowing(@RequestBody UserRequest request) {
-        User user = userService.getUserById(request.getUserId());
+    public ResponseEntity<List<User>> userGetFollowing(@RequestHeader String userId) {
+        User user = userService.getUserById(Integer.valueOf(userId));
         List<Friendship> initiatedFriends = user.getInitiatedFriendships();
         List<User> allFollowings = new LinkedList<>();
         initiatedFriends.forEach((friendship) -> {
@@ -125,62 +125,66 @@ public class UserController {
     }
 
     @PostMapping("follow")
-    public ResponseEntity<String> userGetFriend(@RequestBody UserFollowRequest request)
+    public ResponseEntity<String> userGetFriend(@RequestHeader String userId, @RequestBody UserFollowRequest request)
             throws InvalidOperationException {
-        userService.createFriendship(request.getUserId(), request.getUserId2());
+        userService.createFriendship(Integer.valueOf(userId), request.getUserId2());
         return ResponseEntity.ok().body("User made friend with user " + request.getUserId2() + "! How lucky :)");
     }
 
     @DeleteMapping("follow")
-    public ResponseEntity<String> userDeleteFriend(@RequestBody UserFollowRequest request) {
-        userService.deleteFriendship(request.getUserId(), request.getUserId2());
+    public ResponseEntity<String> userDeleteFriend(@RequestHeader String userId,
+            @RequestBody UserFollowRequest request) {
+        userService.deleteFriendship(Integer.valueOf(userId), request.getUserId2());
         return ResponseEntity.ok().body("User unfriended with user " + request.getUserId2() + "! How sad :(");
     }
 
     // ---Post Actions---
     @PostMapping("post")
-    public ResponseEntity<String> userMakePost(@RequestBody UserPostRequest request) {
-        Integer userId = request.getUserId();
+    public ResponseEntity<String> userMakePost(@RequestHeader String userId, @RequestBody UserPostRequest request) {
+        Integer user1Id = Integer.valueOf(userId);
         Post post = request.getPost();
-        userService.userMakePost(userId, post);
+        userService.userMakePost(user1Id, post);
         return ResponseEntity.ok().body("User " + userId + " made a post titled: " + post.getTitle());
     }
 
     @GetMapping("post")
-    public ResponseEntity<List<Post>> userGetPost(@RequestBody UserRequest request) {
-        return ResponseEntity.ok().body(userService.getUserPosts(request.getUserId()));
+    public ResponseEntity<List<Post>> userGetPost(@RequestHeader String userId) {
+        return ResponseEntity.ok().body(userService.getUserPosts(Integer.valueOf(userId)));
     }
 
     @PostMapping("post/like")
-    public ResponseEntity<String> userLikePost(@RequestBody UserPostRequest request) {
-        userService.likePost(request.getUserId(), request.getPostId());
-        return ResponseEntity.ok().body("User " + request.getUserId() + " liked Post " + request.getPostId());
+    public ResponseEntity<String> userLikePost(@RequestHeader String userId, @RequestBody UserPostRequest request) {
+        userService.likePost(Integer.valueOf(userId), request.getPostId());
+        return ResponseEntity.ok().body("User " + Integer.valueOf(userId) + " liked Post " + request.getPostId());
     }
 
     @DeleteMapping("post/like")
-    public ResponseEntity<String> userUnlikePost(@RequestBody UserPostRequest request) {
-        userService.unlikePost(request.getUserId(), request.getPostId());
-        return ResponseEntity.ok().body("User " + request.getUserId() + " unliked Post " + request.getPostId());
+    public ResponseEntity<String> userUnlikePost(@RequestHeader String userId, @RequestBody UserPostRequest request) {
+        userService.unlikePost(Integer.valueOf(userId), request.getPostId());
+        return ResponseEntity.ok().body("User " + userId + " unliked Post " + request.getPostId());
     }
 
     // ---Comment Actions---
 
     @PostMapping("post/comment")
-    public ResponseEntity<String> userMakeComment(@RequestBody UserCommentRequest request) {
-        userService.userMakeComment(request.getUserId(), request.getPostId(), request.getComment());
-        return ResponseEntity.ok().body("User " + request.getUserId() + " made a comment.");
+    public ResponseEntity<String> userMakeComment(@RequestHeader String userId,
+            @RequestBody UserCommentRequest request) {
+        userService.userMakeComment(Integer.valueOf(userId), request.getPostId(), request.getComment());
+        return ResponseEntity.ok().body("User " + userId + " made a comment.");
     }
 
     @PostMapping("post/comment/like")
-    public ResponseEntity<String> userLikeComment(@RequestBody UserCommentRequest request) {
-        userService.likePostComment(request.getUserId(), request.getPostId(), request.getCommentId());
-        return ResponseEntity.ok().body("User " + request.getUserId() + " liked comment " + request.getCommentId());
+    public ResponseEntity<String> userLikeComment(@RequestHeader String userId,
+            @RequestBody UserCommentRequest request) {
+        userService.likePostComment(Integer.valueOf(userId), request.getPostId(), request.getCommentId());
+        return ResponseEntity.ok().body("User " + userId + " liked comment " + request.getCommentId());
     }
 
     @DeleteMapping("post/comment/like")
-    public ResponseEntity<String> userUnlikeComment(@RequestBody UserCommentRequest request) {
-        userService.unlikePostComment(request.getUserId(), request.getPostId(), request.getCommentId());
-        return ResponseEntity.ok().body("User " + request.getUserId() + " unliked comment " + request.getCommentId());
+    public ResponseEntity<String> userUnlikeComment(@RequestHeader String userId,
+            @RequestBody UserCommentRequest request) {
+        userService.unlikePostComment(Integer.valueOf(userId), request.getPostId(), request.getCommentId());
+        return ResponseEntity.ok().body("User " + userId + " unliked comment " + request.getCommentId());
     }
 
     @ExceptionHandler(AuthenticationException.class)

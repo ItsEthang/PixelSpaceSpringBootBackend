@@ -2,25 +2,25 @@ package com.pixel.PixelSpace.Models.RequestBodies;
 
 import com.pixel.PixelSpace.Models.Post;
 
-public class UserPostRequest extends UserRequest {
+public class UserPostRequest {
     Integer postId;
     Post post;
 
     public UserPostRequest() {
     }
 
-    public UserPostRequest(Integer userId, Post post) {
-        super(userId);
+    public UserPostRequest(Post post) {
+
         this.post = post;
     }
 
-    public UserPostRequest(Integer userId, Integer postId) {
-        super(userId);
+    public UserPostRequest(Integer postId) {
+
         this.postId = postId;
     }
 
-    public UserPostRequest(Integer userId, Integer postId, Post post) {
-        super(userId);
+    public UserPostRequest(Integer postId, Post post) {
+
         this.postId = postId;
         this.post = post;
     }

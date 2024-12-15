@@ -1,13 +1,12 @@
 package com.pixel.PixelSpace.Models.RequestBodies;
 
-public class UserFollowRequest extends UserRequest {
+public class UserFollowRequest {
     Integer userId2;
 
     public UserFollowRequest() {
     }
 
-    public UserFollowRequest(Integer userId, Integer userId2) {
-        super(userId);
+    public UserFollowRequest(Integer userId2) {
         this.userId2 = userId2;
     }
 

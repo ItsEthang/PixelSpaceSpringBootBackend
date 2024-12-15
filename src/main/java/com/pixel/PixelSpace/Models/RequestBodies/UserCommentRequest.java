@@ -10,18 +10,13 @@ public class UserCommentRequest extends UserPostRequest {
 
     }
 
-    public UserCommentRequest(Integer commentId, Comment comment) {
-        this.commentId = commentId;
-        this.comment = comment;
-    }
-
-    public UserCommentRequest(Integer userId, Integer postId, Integer commentId) {
-        super(userId, postId);
+    public UserCommentRequest(Integer postId, Integer commentId) {
+        super(postId);
         this.commentId = commentId;
     }
 
-    public UserCommentRequest(Integer userId, Integer postId, Comment comment) {
-        super(userId, postId);
+    public UserCommentRequest(Integer postId, Comment comment) {
+        super(postId);
         this.comment = comment;
     }
 

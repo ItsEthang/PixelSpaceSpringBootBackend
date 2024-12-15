@@ -1,6 +1,6 @@
 package com.pixel.PixelSpace.Models.RequestBodies;
 
-public class UserPatchRequest extends UserRequest {
+public class UserPatchRequest {
     String name;
     String bio;
     String email;
@@ -9,8 +9,7 @@ public class UserPatchRequest extends UserRequest {
     public UserPatchRequest() {
     }
 
-    public UserPatchRequest(Integer userId, String name, String bio, String email, String profileImg) {
-        super(userId);
+    public UserPatchRequest(String name, String bio, String email, String profileImg) {
         this.name = name;
         this.bio = bio;
         this.email = email;
