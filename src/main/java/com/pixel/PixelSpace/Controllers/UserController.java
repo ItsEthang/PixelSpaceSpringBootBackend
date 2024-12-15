@@ -26,6 +26,7 @@ import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
 import com.pixel.PixelSpace.Models.RequestBodies.UserFollowRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPatchRequest;
+import com.pixel.PixelSpace.Models.RequestBodies.UserPostRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserRequest;
 import com.pixel.PixelSpace.Services.UserService;
 
@@ -127,27 +128,29 @@ public class UserController {
     }
 
     // ---Post Actions---
-    @PostMapping("{id}/post")
-    public ResponseEntity<String> userMakePost(@PathVariable Integer id, @RequestBody Post post) {
-        userService.userMakePost(id, post);
-        return ResponseEntity.ok().body("User " + id + " made a post titled " + post.getTitle());
+    @PostMapping("post")
+    public ResponseEntity<String> userMakePost(@RequestBody UserPostRequest request) {
+        Integer userId = request.getUserId();
+        Post post = request.getPost();
+        userService.userMakePost(userId, post);
+        return ResponseEntity.ok().body("User " + userId + " made a post titled: " + post.getTitle());
     }
 
-    @GetMapping("{id}/post")
-    public ResponseEntity<List<Post>> userGetPost(@PathVariable Integer id) {
-        return ResponseEntity.ok().body(userService.getUserPosts(id));
+    @GetMapping("post")
+    public ResponseEntity<List<Post>> userGetPost(@RequestBody UserRequest request) {
+        return ResponseEntity.ok().body(userService.getUserPosts(request.getUserId()));
     }
 
-    @PostMapping("{userId}/post/{postId}/like")
-    public ResponseEntity<String> userLikePost(@PathVariable Integer userId, @PathVariable Integer postId) {
-        userService.likePost(userId, postId);
-        return ResponseEntity.ok().body("User " + userId + " liked Post " + postId);
+    @PostMapping("post/like")
+    public ResponseEntity<String> userLikePost(@RequestBody UserPostRequest request) {
+        userService.likePost(request.getUserId(), request.getPostId());
+        return ResponseEntity.ok().body("User " + request.getUserId() + " liked Post " + request.getPostId());
     }
 
-    @DeleteMapping("{userId}/post/{postId}/like")
-    public ResponseEntity<String> userUnlikePost(@PathVariable Integer userId, @PathVariable Integer postId) {
-        userService.unlikePost(userId, postId);
-        return ResponseEntity.ok().body("User " + userId + " unliked Post " + postId);
+    @DeleteMapping("post/like")
+    public ResponseEntity<String> userUnlikePost(@RequestBody UserPostRequest request) {
+        userService.unlikePost(request.getUserId(), request.getPostId());
+        return ResponseEntity.ok().body("User " + request.getUserId() + " unliked Post " + request.getPostId());
     }
 
     // ---Comment Actions---
