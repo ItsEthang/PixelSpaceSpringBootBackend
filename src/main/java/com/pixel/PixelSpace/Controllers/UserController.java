@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +24,8 @@ import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Friendship;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
+import com.pixel.PixelSpace.Models.RequestBodies.UserPatchRequest;
+import com.pixel.PixelSpace.Models.RequestBodies.UserRequest;
 import com.pixel.PixelSpace.Services.UserService;
 
 @RestController
@@ -62,27 +63,28 @@ public class UserController {
     }
 
     // Get User Profile Management
-    @GetMapping("")
+    @GetMapping("all")
     public ResponseEntity<List<User>> userGetAll() {
         return ResponseEntity.status(200).body(userService.getAllUsers());
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<User> userGetById(@PathVariable Integer id) {
-        return ResponseEntity.status(200).body(userService.getUserById(id));
+    @GetMapping("")
+    public ResponseEntity<User> userGetById(@RequestBody UserRequest request) {
+        return ResponseEntity.status(200).body(userService.getUserById(request.getUserId()));
     }
 
-    @PatchMapping("{id}")
-    public ResponseEntity<String> userPatch(@PathVariable Integer id, @RequestParam String name,
-            @RequestParam String bio, @RequestParam String email, @RequestParam String profileImg) {
-        userService.userUpdate(id, name, bio, email, profileImg);
+    @PatchMapping("")
+    public ResponseEntity<String> userPatch(@RequestBody UserPatchRequest request) {
+        userService.userUpdate(request.getUserId(), request.getName(), request.getBio(), request.getEmail(),
+                request.getProfileImg());
         return ResponseEntity.ok().body("User updated");
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> userDeleteById(@PathVariable Integer id) {
-        userService.userDelete(id);
-        return ResponseEntity.ok().body("User " + id + " deleted");
+    @DeleteMapping("")
+    public ResponseEntity<String> userDeleteById(@RequestBody UserRequest request) {
+        Integer userId = request.getUserId();
+        userService.userDelete(userId);
+        return ResponseEntity.ok().body("User " + userId + " deleted");
     }
 
     // ---Friendship Actions---
