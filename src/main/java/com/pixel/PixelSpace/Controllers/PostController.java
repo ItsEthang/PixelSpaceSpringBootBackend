@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
+import com.pixel.PixelSpace.Models.ResponseEntities.UserResponse;
 import com.pixel.PixelSpace.Services.PostService;
 
 @RestController
@@ -50,8 +51,10 @@ public class PostController {
     }
 
     @GetMapping("{id}/user")
-    public ResponseEntity<User> postGetUser(@PathVariable Integer id) {
-        return ResponseEntity.status(200).body(postService.getPostUser(id));
+    public ResponseEntity<UserResponse> postGetUser(@PathVariable Integer id) {
+        User user = postService.getPostUser(id);
+        UserResponse res = new UserResponse(user.getName(), user.getProfileImg());
+        return ResponseEntity.status(200).body(res);
     }
 
     @GetMapping("{id}/comment")

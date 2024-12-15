@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pixel.PixelSpace.Exceptions.InvalidOperationException;
-import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.Friendship;
 import com.pixel.PixelSpace.Models.Post;
 import com.pixel.PixelSpace.Models.User;
@@ -29,6 +27,7 @@ import com.pixel.PixelSpace.Models.RequestBodies.UserFollowRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPatchRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPostRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserRequest;
+import com.pixel.PixelSpace.Models.ResponseEntities.UserInfoResponse;
 import com.pixel.PixelSpace.Services.UserService;
 
 @RestController
@@ -67,13 +66,23 @@ public class UserController {
 
     // Get User Profile Management
     @GetMapping("all")
-    public ResponseEntity<List<User>> userGetAll() {
-        return ResponseEntity.status(200).body(userService.getAllUsers());
+    public ResponseEntity<List<UserInfoResponse>> userGetAll() {
+        List<User> users = userService.getAllUsers();
+        List<UserInfoResponse> usersInfo = new LinkedList<>();
+        for (User user : users) {
+            UserInfoResponse userInfo = new UserInfoResponse(user.getName(), user.getProfileImg(), user.getUsername(),
+                    user.getBio());
+            usersInfo.add(userInfo);
+        }
+        return ResponseEntity.status(200).body(usersInfo);
     }
 
     @GetMapping("")
-    public ResponseEntity<User> userGetById(@RequestBody UserRequest request) {
-        return ResponseEntity.status(200).body(userService.getUserById(request.getUserId()));
+    public ResponseEntity<UserInfoResponse> userGetById(@RequestBody UserRequest request) {
+        User user = userService.getUserById(request.getUserId());
+        UserInfoResponse userInfo = new UserInfoResponse(user.getName(), user.getProfileImg(), user.getUsername(),
+                user.getBio());
+        return ResponseEntity.status(200).body(userInfo);
     }
 
     @PatchMapping("")

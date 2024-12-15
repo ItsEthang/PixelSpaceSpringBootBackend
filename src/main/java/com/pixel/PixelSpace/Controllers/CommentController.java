@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pixel.PixelSpace.Models.Comment;
 import com.pixel.PixelSpace.Models.User;
+import com.pixel.PixelSpace.Models.ResponseEntities.UserResponse;
 import com.pixel.PixelSpace.Services.CommentService;
 
 @RestController
@@ -37,8 +38,10 @@ public class CommentController {
     }
 
     @GetMapping("{id}/user")
-    public ResponseEntity<User> commentGetUser(@PathVariable Integer id) {
-        return ResponseEntity.status(200).body(commentService.getCommentUser(id));
+    public ResponseEntity<UserResponse> commentGetUser(@PathVariable Integer id) {
+        User user = commentService.getCommentUser(id);
+        UserResponse res = new UserResponse(user.getName(), user.getProfileImg());
+        return ResponseEntity.status(200).body(res);
     }
 
     @GetMapping("{id}/like")
