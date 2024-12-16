@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
 
 import com.pixel.PixelSpace.Exceptions.InvalidOperationException;
 import com.pixel.PixelSpace.Models.Friendship;
@@ -62,7 +63,9 @@ public class UserController {
     @PostMapping("login")
     public ResponseEntity<Void> userLogin(@RequestBody User user) throws AuthenticationException {
         User loggedUser = userService.userLogin(user.getUsername(), user.getPassword());
-        return ResponseEntity.noContent().header("userId", Integer.toString(loggedUser.getUserId())).build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("userId", Integer.toString(loggedUser.getUserId()));
+        return ResponseEntity.ok().headers(headers).build();
     }
 
     // Get User Profile Management
