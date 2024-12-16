@@ -1,13 +1,15 @@
 package com.pixel.PixelSpace.Models.ResponseEntities;
 
 public class UserResponse {
+    String username;
     String name;
     String profileImg;
 
     public UserResponse() {
     }
 
-    public UserResponse(String name, String profileImg) {
+    public UserResponse(String username, String name, String profileImg) {
+        this.username = username;
         this.name = name;
         this.profileImg = profileImg;
     }
@@ -28,4 +30,11 @@ public class UserResponse {
         this.profileImg = profileImg;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

@@ -53,7 +53,7 @@ public class PostController {
     @GetMapping("{id}/user")
     public ResponseEntity<UserResponse> postGetUser(@PathVariable Integer id) {
         User user = postService.getPostUser(id);
-        UserResponse res = new UserResponse(user.getName(), user.getProfileImg());
+        UserResponse res = new UserResponse(user.getUsername(), user.getName(), user.getProfileImg());
         return ResponseEntity.status(200).body(res);
     }
 

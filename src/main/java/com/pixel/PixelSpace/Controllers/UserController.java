@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpHeaders;
@@ -74,7 +75,7 @@ public class UserController {
         List<User> users = userService.getAllUsers();
         List<UserInfoResponse> usersInfo = new LinkedList<>();
         for (User user : users) {
-            UserInfoResponse userInfo = new UserInfoResponse(user.getName(), user.getProfileImg(), user.getUsername(),
+            UserInfoResponse userInfo = new UserInfoResponse(user.getUsername(), user.getName(), user.getProfileImg(),
                     user.getBio());
             usersInfo.add(userInfo);
         }
@@ -84,7 +85,15 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity<UserInfoResponse> userGetById(@RequestHeader String userId) {
         User user = userService.getUserById(Integer.valueOf(userId));
-        UserInfoResponse userInfo = new UserInfoResponse(user.getName(), user.getProfileImg(), user.getUsername(),
+        UserInfoResponse userInfo = new UserInfoResponse(user.getUsername(), user.getName(), user.getProfileImg(),
+                user.getBio());
+        return ResponseEntity.status(200).body(userInfo);
+    }
+
+    @GetMapping("info")
+    public ResponseEntity<UserInfoResponse> userGetByUsername(@RequestParam String username) {
+        User user = userService.getUserByUsername(username);
+        UserInfoResponse userInfo = new UserInfoResponse(user.getUsername(), user.getName(), user.getProfileImg(),
                 user.getBio());
         return ResponseEntity.status(200).body(userInfo);
     }
@@ -112,7 +121,7 @@ public class UserController {
         List<UserResponse> allFollowers = new LinkedList<>();
         receivedFriends.forEach((friendship) -> {
             User follower = friendship.getUser1();
-            UserResponse res = new UserResponse(follower.getName(), follower.getProfileImg());
+            UserResponse res = new UserResponse(follower.getUsername(), follower.getName(), follower.getProfileImg());
             allFollowers.add(res);
         });
         return ResponseEntity.status(200).body(allFollowers);
@@ -126,7 +135,8 @@ public class UserController {
         List<UserResponse> allFollowings = new LinkedList<>();
         initiatedFriends.forEach((friendship) -> {
             User following = friendship.getUser2();
-            UserResponse res = new UserResponse(following.getName(), following.getProfileImg());
+            UserResponse res = new UserResponse(following.getUsername(), following.getName(),
+                    following.getProfileImg());
             allFollowings.add(res);
         });
         return ResponseEntity.status(200).body(allFollowings);

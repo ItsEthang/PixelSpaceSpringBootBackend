@@ -65,6 +65,12 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("The user of id " + userId + " is not found"));
     }
 
+    public User getUserByUsername(String username) {
+        Optional<User> validUser = userRepository.findByUsername(username);
+        return validUser
+                .orElseThrow(() -> new ResourceNotFoundException(username + " is not found"));
+    }
+
     public User userLogin(String username, String password) throws AuthenticationException {
         Optional<User> validLogin = userRepository.findByUsernameAndPassword(username, password);
         return validLogin.orElseThrow(() -> new AuthenticationException("The username or the password is incorrect"));
