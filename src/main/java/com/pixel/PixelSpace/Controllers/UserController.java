@@ -75,7 +75,8 @@ public class UserController {
         List<User> users = userService.getAllUsers();
         List<UserInfoResponse> usersInfo = new LinkedList<>();
         for (User user : users) {
-            UserInfoResponse userInfo = new UserInfoResponse(user.getUsername(), user.getName(), user.getProfileImg(),
+            UserInfoResponse userInfo = new UserInfoResponse(user.getUserId(), user.getUsername(), user.getName(),
+                    user.getProfileImg(),
                     user.getBio());
             usersInfo.add(userInfo);
         }
@@ -85,7 +86,8 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity<UserInfoResponse> userGetById(@RequestHeader String userId) {
         User user = userService.getUserById(Integer.valueOf(userId));
-        UserInfoResponse userInfo = new UserInfoResponse(user.getUsername(), user.getName(), user.getProfileImg(),
+        UserInfoResponse userInfo = new UserInfoResponse(user.getUserId(), user.getUsername(), user.getName(),
+                user.getProfileImg(),
                 user.getBio());
         return ResponseEntity.status(200).body(userInfo);
     }
@@ -93,7 +95,8 @@ public class UserController {
     @GetMapping("info")
     public ResponseEntity<UserInfoResponse> userGetByUsername(@RequestParam String username) {
         User user = userService.getUserByUsername(username);
-        UserInfoResponse userInfo = new UserInfoResponse(user.getUsername(), user.getName(), user.getProfileImg(),
+        UserInfoResponse userInfo = new UserInfoResponse(user.getUserId(), user.getUsername(), user.getName(),
+                user.getProfileImg(),
                 user.getBio());
         return ResponseEntity.status(200).body(userInfo);
     }
@@ -121,7 +124,8 @@ public class UserController {
         List<UserResponse> allFollowers = new LinkedList<>();
         receivedFriends.forEach((friendship) -> {
             User follower = friendship.getUser1();
-            UserResponse res = new UserResponse(follower.getUsername(), follower.getName(), follower.getProfileImg());
+            UserResponse res = new UserResponse(follower.getUserId(), follower.getUsername(), follower.getName(),
+                    follower.getProfileImg());
             allFollowers.add(res);
         });
         return ResponseEntity.status(200).body(allFollowers);
@@ -135,7 +139,7 @@ public class UserController {
         List<UserResponse> allFollowings = new LinkedList<>();
         initiatedFriends.forEach((friendship) -> {
             User following = friendship.getUser2();
-            UserResponse res = new UserResponse(following.getUsername(), following.getName(),
+            UserResponse res = new UserResponse(following.getUserId(), following.getUsername(), following.getName(),
                     following.getProfileImg());
             allFollowings.add(res);
         });

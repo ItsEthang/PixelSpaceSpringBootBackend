@@ -40,7 +40,7 @@ public class CommentController {
     @GetMapping("{id}/user")
     public ResponseEntity<UserResponse> commentGetUser(@PathVariable Integer id) {
         User user = commentService.getCommentUser(id);
-        UserResponse res = new UserResponse(user.getUsername(), user.getName(), user.getProfileImg());
+        UserResponse res = new UserResponse(user.getUserId(), user.getUsername(), user.getName(), user.getProfileImg());
         return ResponseEntity.status(200).body(res);
     }
 

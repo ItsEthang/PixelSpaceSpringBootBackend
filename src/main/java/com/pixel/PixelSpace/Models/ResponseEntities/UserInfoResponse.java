@@ -6,8 +6,8 @@ public class UserInfoResponse extends UserResponse {
     public UserInfoResponse() {
     }
 
-    public UserInfoResponse(String username, String name, String profileImg, String bio) {
-        super(username, name, profileImg);
+    public UserInfoResponse(Integer userId, String username, String name, String profileImg, String bio) {
+        super(userId, username, name, profileImg);
         this.bio = bio;
     }
 
