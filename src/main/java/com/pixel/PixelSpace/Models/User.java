@@ -25,6 +25,7 @@ public class User {
 
     private String name;
 
+    @Column(columnDefinition = "TEXT", length = 6000)
     private String bio;
 
     @Column(name = "profile_img")
