@@ -13,9 +13,10 @@ import com.pixel.PixelSpace.Repositories.FriendshipRepository;
 
 @Service
 public class FriendshipService {
-    @Autowired
+
     private FriendshipRepository friendshipRepository;
 
+    @Autowired
     public FriendshipService(FriendshipRepository friendshipRepository) {
         this.friendshipRepository = friendshipRepository;
     }

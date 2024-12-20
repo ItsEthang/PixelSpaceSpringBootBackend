@@ -22,17 +22,17 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserService {
 
-    @Autowired
     private UserRepository userRepository;
-    @Autowired
+
     private PostService postService;
-    @Autowired
+
     private FriendshipService friendshipService;
-    @Autowired
+
     private CommentService commentService;
-    @Autowired
+
     private LikeService likeService;
 
+    @Autowired
     public UserService(UserRepository userRepository, PostService postService, FriendshipService friendshipService,
             CommentService commentService, LikeService likeService) {
         this.userRepository = userRepository;

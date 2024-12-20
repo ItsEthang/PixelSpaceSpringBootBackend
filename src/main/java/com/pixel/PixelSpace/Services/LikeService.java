@@ -12,9 +12,10 @@ import java.util.Optional;
 
 @Service
 public class LikeService {
-    @Autowired
+
     private LikeRepository likeRepository;
 
+    @Autowired
     public LikeService(LikeRepository likeRepository) {
         this.likeRepository = likeRepository;
     }

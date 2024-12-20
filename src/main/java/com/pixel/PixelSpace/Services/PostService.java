@@ -14,11 +14,12 @@ import com.pixel.PixelSpace.Repositories.PostRepository;
 
 @Service
 public class PostService {
-    @Autowired
+
     private PostRepository postRepository;
-    @Autowired
+
     private CommentService commentService;
 
+    @Autowired
     public PostService(PostRepository postRepository, CommentService commentService) {
         this.postRepository = postRepository;
         this.commentService = commentService;
