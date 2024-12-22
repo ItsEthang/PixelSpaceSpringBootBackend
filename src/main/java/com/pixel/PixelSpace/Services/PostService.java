@@ -61,6 +61,19 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    public List<Post> getPostsByUsername(String username) {
+        return postRepository.findAll().stream()
+                .filter(post -> post.getUser().getUsername().equals(username))
+                .collect(Collectors.toList());
+    }
+
+    public List<Post> getPostsByTitleAndUsername(String title, String username) {
+        return postRepository.findAll().stream()
+                .filter(post -> post.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .filter(post -> post.getUser().getUsername().equals(username))
+                .collect(Collectors.toList());
+    }
+
     public void postDelete(Integer postId) {
         if (postRepository.findById(postId).isPresent()) {
             postRepository.deleteById(postId);

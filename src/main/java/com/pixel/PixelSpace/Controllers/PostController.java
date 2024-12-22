@@ -42,10 +42,19 @@ public class PostController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Post>> postGetAll(@RequestParam(required = false) String title) {
+    public ResponseEntity<List<Post>> postGetAll(@RequestParam(required = false) String title,
+            @RequestParam(required = false) String username) {
         List<Post> posts = postService.getAllPosts();
-        if (title != null && !title.isEmpty()) {
+        boolean validTitle = title != null && !title.isEmpty();
+        boolean validUsername = username != null && !username.isEmpty();
+        if (validTitle) {
             posts = postService.getPostsByTitle(title);
+        }
+        if (validUsername) {
+            posts = postService.getPostsByUsername(username);
+        }
+        if (validTitle && validUsername) {
+            posts = postService.getPostsByTitleAndUsername(title, username);
         }
         return ResponseEntity.status(200).body(posts);
     }
