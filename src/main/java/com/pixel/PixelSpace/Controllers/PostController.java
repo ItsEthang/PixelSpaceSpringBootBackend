@@ -1,6 +1,7 @@
 package com.pixel.PixelSpace.Controllers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,8 +42,12 @@ public class PostController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Post>> postGetAll() {
-        return ResponseEntity.status(200).body(postService.getAllPosts());
+    public ResponseEntity<List<Post>> postGetAll(@RequestParam(required = false) String title) {
+        List<Post> posts = postService.getAllPosts();
+        if (title != null && !title.isEmpty()) {
+            posts = postService.getPostsByTitle(title);
+        }
+        return ResponseEntity.status(200).body(posts);
     }
 
     @GetMapping("{id}")

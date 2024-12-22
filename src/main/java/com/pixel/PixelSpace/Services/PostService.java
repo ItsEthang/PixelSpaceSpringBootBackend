@@ -1,6 +1,7 @@
 package com.pixel.PixelSpace.Services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,12 @@ public class PostService {
 
     public List<Post> getPostByUser(User user) {
         return postRepository.findAllByUser(user);
+    }
+
+    public List<Post> getPostsByTitle(String title) {
+        return postRepository.findAll().stream()
+                .filter(post -> post.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     public void postDelete(Integer postId) {
