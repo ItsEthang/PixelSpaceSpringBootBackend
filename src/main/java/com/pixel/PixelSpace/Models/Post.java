@@ -41,6 +41,11 @@ public class Post {
 
     }
 
+    public Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
     // posting
     public Post(User user, String title, String content, Long timeCreated) {
         this.user = user;
