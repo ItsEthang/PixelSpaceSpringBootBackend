@@ -1,11 +1,14 @@
 package com.pixel.PixelSpace.Controllers;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.crypto.SecretKey;
 import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpHeaders;
 
 import com.pixel.PixelSpace.Exceptions.InvalidOperationException;
 import com.pixel.PixelSpace.Models.Friendship;
@@ -29,13 +31,22 @@ import com.pixel.PixelSpace.Models.RequestBodies.UserCommentRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserFollowRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPatchRequest;
 import com.pixel.PixelSpace.Models.RequestBodies.UserPostRequest;
+import com.pixel.PixelSpace.Models.ResponseEntities.TokenResponse;
 import com.pixel.PixelSpace.Models.ResponseEntities.UserInfoResponse;
 import com.pixel.PixelSpace.Models.ResponseEntities.UserResponse;
 import com.pixel.PixelSpace.Services.UserService;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expiration-ms}")
+    private long jwtExpirationMs;
 
     private UserService userService;
 
@@ -62,11 +73,24 @@ public class UserController {
 
     // User authentication
     @PostMapping("login")
-    public ResponseEntity<Void> userLogin(@RequestBody User user) throws AuthenticationException {
+    public ResponseEntity<TokenResponse> userLogin(@RequestBody User user) throws AuthenticationException {
+        // Authenticate user
         User loggedUser = userService.userLogin(user.getUsername(), user.getPassword());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("userId", Integer.toString(loggedUser.getUserId()));
-        return ResponseEntity.ok().headers(headers).build();
+
+        // Generate JWT token
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+
+        String token = Jwts.builder()
+                .setSubject(loggedUser.getUsername())
+                .claim("userId", loggedUser.getUserId())
+                .claim("username", loggedUser.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(key)
+                .compact();
+
+        // Create response body
+        return ResponseEntity.ok(new TokenResponse(token));
     }
 
     // Get User Profile Management
