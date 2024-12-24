@@ -3,6 +3,7 @@ package com.pixel.PixelSpace.Controllers;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 import javax.naming.AuthenticationException;
@@ -101,7 +102,8 @@ public class UserController {
 
     // Get User Profile Management
     @GetMapping("all")
-    public ResponseEntity<List<UserInfoResponse>> userGetAll() {
+    public ResponseEntity<List<UserInfoResponse>> userGetAll(@RequestParam(required = false) String username) {
+        boolean validUsername = username != null && !username.isEmpty();
         List<User> users = userService.getAllUsers();
         List<UserInfoResponse> usersInfo = new LinkedList<>();
         for (User user : users) {
@@ -109,6 +111,11 @@ public class UserController {
                     user.getProfileImg(),
                     user.getBio());
             usersInfo.add(userInfo);
+        }
+        if (validUsername) {
+            usersInfo = usersInfo.stream()
+                    .filter(user -> user.getUsername().toLowerCase().contains(username.toLowerCase()))
+                    .collect(Collectors.toList());
         }
         return ResponseEntity.status(200).body(usersInfo);
     }
