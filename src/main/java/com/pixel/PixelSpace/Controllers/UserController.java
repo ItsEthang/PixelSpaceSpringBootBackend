@@ -9,6 +9,7 @@ import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -89,8 +90,13 @@ public class UserController {
                 .signWith(key)
                 .compact();
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("userId", Integer.toString(loggedUser.getUserId()));
+
         // Create response body
-        return ResponseEntity.ok(new TokenResponse(token));
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new TokenResponse(token));
     }
 
     // Get User Profile Management
