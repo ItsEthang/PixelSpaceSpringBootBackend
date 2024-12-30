@@ -35,3 +35,4 @@ src/main/resources/application.properties
 env.properties
 .env
 application.properties
+PEM_FILE.pem
